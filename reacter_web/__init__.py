@@ -22,7 +22,7 @@ def create_app(test_config=None):
     @app.route("/")
     # This is going to be the homepage, nothing much should have to happen here
     def homepage():
-        return render_template('homepage.html')
+        return render_template('index.html')
 
     @app.route("/user/<userid>")
     # This is the user profile page
