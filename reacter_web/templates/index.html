@@ -6,9 +6,38 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Reacter</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .welcome {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .welcome h1 {
+            text-align: center;
+            position: absolute;
+            white-space: nowrap;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
 </head>
 <body>
-    <p>Welcome to Reacter! This is the landing page, where new users will come. When the user has logged in for the first time, it will save a cookie. When that cookie is detected, it will redirect to the feed. </p>
+    <!-- <p>Welcome to Reacter! This is the landing page, where new users will come. When the user has logged in for the first time, it will save a cookie. When that cookie is detected, it will redirect to the feed. </p> -->
+
+    <div class="welcome">
+        <h1>hey traveler! welcome to <b>Reacter</b></h1>
+    </div>
+
+    <div interact="interact">
+
+    </div>
 
     <!-- This is where React comes from, I don't know how necessary it is on this page... -->
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
