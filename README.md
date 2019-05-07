@@ -11,10 +11,10 @@ I recognize that this has quickly become a humongous project, but there are only
   - This project has a really bad file structure which isn't right, and you should **never** have a whole bunch of things inside the `__init__.py` file. Well, we do, and I'll try to fix this soon. Anyways, for the time being, `__init__.py` is where all the Flask code is and you're welcome to take a look around and change things.
 
 ## How to Use
-- In order to run this, you've gotta have Flask, and it all runs in a virtual environment. For first time setup, be sure to install Flask. This is the command you have to run in order to get it running on your local machine, while in the directory with `__init__.py`. Eventually, I'll get a virtual machine to run this on so you don't have to worry about running it yourself. 
+- In order to run this, you've gotta have Flask 1.0.2 or above, and it all runs in a virtual environment. For first time setup, be sure to install Flask. This is the command you have to run in order to get it running on your local machine, while in the directory with `__init__.py`. Eventually, I'll get a virtual machine to run this on so you don't have to worry about running it yourself. 
 ```
 FLASK_APP=__init__.py flask run
 ```
 
-### If you can't get it working
-well sucks i don't even know how to get it working either lol
+### Troubleshooting
+Try making a virtual environment. The repo includes one, and to use it, type `source bin/activate` while you're in the root directory of the repository. Then, try running the above command again while in the `reacter_web` folder.
