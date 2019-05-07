@@ -7,8 +7,84 @@
     <title>Register for Reacter</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">
+    <title>RegisterPage</title>
 </head>
 <body>
+    <h1>Register Below!</h1>
+    
+    <br>
+    
+    <form>
+            <div>
+            <label>First name</label>
+            <input type="text" name="firstName" placeholder="First Name">
+            </div>
+
+            <br>
+
+            <div>
+            <label>Last name</label>
+            <input type="text" name="lasttName" placeholder="Last Name">
+            </div>
+
+            <br>
+
+            <div>
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Email">
+            </div>
+
+            <br>
+
+            <div>
+                <label>Describe Yourself</label>
+                <textarea name="Who are you?"></textarea>
+            </div>
+
+            <br>
+
+            <div>
+                <label>Quantity</label>
+                <select name="Gender">
+                    <option value="Male">1</option>
+                    <option value="Female">2</option>
+                    <option value="Other">3</option>
+                </select>
+            </div>
+
+            <br>
+            
+
+            <br>
+            <div>
+                <label>Birth Date</label>
+                <input type="date" name="today">
+            </div>    
+
+            <br>
+            <div>
+                User name:<br>
+                <input type="text" name="password">
+            </div>
+            Create Password:<br>
+            <input type="password" value="" id="myInput">
+            <input type="checkbox" onclick="myFunction()">Show Password
+
+            <script>
+            function myFunction() {
+                var x = document.getElementById("myInput");
+                if (x.type === "password") {
+                    x.type = "text";
+                } else {
+                    x.type = "password";
+                }
+            }
+            </script>
+            <br>
+<br>
+            <div>
+                <input type="Submit" name="Submit" value="Submit">
+            </div>
 
     <!-- Yup, still React -->
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
