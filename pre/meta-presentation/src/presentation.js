@@ -77,7 +77,7 @@ export default class Presentation extends React.Component {
             Standard List
           </Heading>
           <List>
-            <ListItem>Item 1</ListItem>
+            <ListItem>Terra did this</ListItem>
             <ListItem>Item 2</ListItem>
             <ListItem>Item 3</ListItem>
             <ListItem>Item 4</ListItem>
