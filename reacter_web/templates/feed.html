@@ -6,13 +6,117 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Your Feed</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='feed.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='feed.css') }}"/>
+
+
+    <style>
+        body{
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            
+        }
+
+        footer{
+            background-color: #808080;
+            width: 100%;
+            height: 5vh;
+            padding: 0;
+            margin:0;
+        }
+
+        aside .a-top{
+            background-color: #333333;
+            width: 20%;
+            height: 30vh;
+            border-bottom: 3px solid #1A1A1A;
+            border-right: 3px solid #1A1A1A;
+            padding: 0;
+            margin:0;
+        }
+
+        aside .a-bottom{
+            background-color: #333333;
+            width: 20%;
+            height: 65vh;
+            border-right: 3px solid #1A1A1A;
+            padding: 0;
+            margin:0;
+        }
+
+        section{
+            float:right;
+            background-image: radial-gradient(#808080, #333333);
+            width: 79.8%;
+            height: 95.4vh;
+            padding: 0;
+            margin:0;
+            overflow: auto;
+            white-space: nowrap;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: black;
+            border-radius: 10px;
+        }
+
+        .cards{
+            background-color: #E6E7E8;
+            border:3px solid #207072;
+            border-radius: 10px;
+            width: 300px;
+            height: 60%;
+            display: inline-block;
+            margin: 2pt;
+            margin-top: 12%;
+            margin-left: 3%;
+            text-align: center;
+            font-size: 50px;
+        }
+
+        .search{
+            width: 200px;
+            height: 30px;
+            margin-left: 1050px;
+            margin-top: 1%;
+            background-color:white;
+            border: 3px solid black;
+            border-radius: 50px;
+            position: absolute;
+            z-index: 10px;
+        }
+
+        
+
+    </style> 
 </head>
 <body>
-    
     <!-- where we actually need React -->
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+    <div class="search"></div>
+    <section>
+        <div class="cards">1</div>
+        <div class="cards">2</div>
+        <div class="cards">3</div>
+        <div class="cards">4</div>
+    </section>
+    <aside>
+        <div class="a-top"></div>
+        <div class="a-bottom"></div>
+    </aside>
+    <footer></footer>
+
+
+
+
+
 </body>
 </html>
