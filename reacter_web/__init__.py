@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, render_template, request, g, redirect, session, Blueprint, url_for
-from .db import get_db
+from .db import get_db, close_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -42,11 +42,14 @@ def create_app(test_config=None):
             user = db.execute(
                 'SELECT * FROM users WHERE handle = ?', (username, )
             ).fetchone()
+            print([(i[0], i[1], i[2], i[3]) for i in db.execute('SELECT * FROM users').fetchall()])
+            print(user)
 
             if user is None:
                 error = 'No user by the name.'
                 return "No user by the name"
             elif user['password'] != password:
+                print("i think the password is wrong")
                 error = 'Wrong password.'
                 return "Wrong password"
 
@@ -55,7 +58,7 @@ def create_app(test_config=None):
                 print(user)
                 # session.clear()
                 # session['user_id'] = user['handle']
-                # TODO: FIX THIS, MAKE THINGS ACTUALLY WORK (LOGGING BACK IN DOESN'T WORK)
+            close_db()
 
         elif request.form['submitButton'] == "register":
             # return "Registered" + request.form['Username'] + request.form['Password']
@@ -75,9 +78,12 @@ def create_app(test_config=None):
                     'INSERT INTO users (handle, password, regular_name) VALUES (?, ?, ?)',
                     (username, password, username)
                 )
-                print(db.execute('SELECT * FROM users').fetchall())
+                db.commit()
+                # print([(i[0], i[1], i[2], i[3]) for i in db.execute('SELECT * FROM users').fetchall()])
+                close_db()
 
             else:
+                close_db()
                 return "there is already a user by that name"
 
         return render_template('index.html')
