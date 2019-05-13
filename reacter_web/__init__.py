@@ -10,8 +10,8 @@ def create_app(test_config=None):
     print(app.instance_path)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        # DATABASE=os.path.join(app.instance_path, 'reacter.sqlite')
-        DATABASE=os.path.join('/Users/mikol/Desktop/Reacter/var/reacter_web-instance/reacter.sqlite')
+        DATABASE=os.path.join(app.instance_path, 'reacter.sqlite')
+        # DATABASE=os.path.join('/Users/mikol/Desktop/Reacter/var/reacter_web-instance/reacter.sqlite')
     )
 
     
@@ -99,11 +99,14 @@ def create_app(test_config=None):
     @app.route("/user/<userid>")
     # This is the user profile page
     def profile(userid):
+        db = get_db()
         potentialUser = db.execute(
-            'SELECT * FROM users WHERE handle = ?', (username)
-        )
+            'SELECT * FROM users WHERE handle = ?', (userid, )
+        ).fetchone()
         if potentialUser is None:
             return "no such user"
+        elif potentialUser == g.user:
+            return "this is you!"
         else:
             return render_template('profile.html', userid=potentialUser[0])
         
