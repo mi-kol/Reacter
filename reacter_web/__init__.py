@@ -7,10 +7,13 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    print(app.instance_path)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'reacter.sqlite')
+        # DATABASE=os.path.join(app.instance_path, 'reacter.sqlite')
+        DATABASE=os.path.join('/Users/mikol/Desktop/Reacter/var/reacter_web-instance/reacter.sqlite')
     )
+
     
     if test_config is None:
         app.config.from_pyfile('config.py', silent=True)
@@ -56,8 +59,8 @@ def create_app(test_config=None):
             if error is None:
                 print("logged in", username, "with password", password)
                 print(user)
-                # session.clear()
-                # session['user_id'] = user['handle']
+                session.clear()
+                session['user_id'] = user['handle']
             close_db()
 
         elif request.form['submitButton'] == "register":
@@ -86,7 +89,7 @@ def create_app(test_config=None):
                 close_db()
                 return "there is already a user by that name"
 
-        return render_template('index.html')
+        return redirect('/')
 
     @app.route("/testingfeed")
     def feed():
@@ -96,7 +99,22 @@ def create_app(test_config=None):
     @app.route("/user/<userid>")
     # This is the user profile page
     def profile(userid):
-        return render_template('profile.html', userid=userid)
+        potentialUser = db.execute(
+            'SELECT * FROM users WHERE handle = ?', (username)
+        )
+        if potentialUser is None:
+            return "no such user"
+        else:
+            return render_template('profile.html', userid=potentialUser[0])
+        
+
+    @app.route("/whoami")
+    def whoami():
+        if g.user is None:
+            print("yikes")
+            return "no user logged in"
+        else:
+            return g.user[0]
 
     @app.route("/register", methods=['GET', 'POST'])
     def register():
@@ -138,5 +156,5 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM users WHERE handle = ?', (handle,)
+            'SELECT * FROM users WHERE handle = ?', (user_id,)
         ).fetchone()
