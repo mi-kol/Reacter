@@ -10,8 +10,8 @@ def create_app(test_config=None):
     print(app.instance_path)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'reacter.sqlite')
-        # DATABASE=os.path.join('/Users/mikol/Desktop/Reacter/var/reacter_web-instance/reacter.sqlite')
+        # DATABASE=os.path.join(app.instance_path, 'reacter.sqlite')
+        DATABASE=os.path.join('/Users/mikol/Desktop/Reacter/var/reacter_web-instance/reacter.sqlite')
     )
 
     
