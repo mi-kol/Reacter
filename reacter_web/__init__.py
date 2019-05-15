@@ -106,7 +106,7 @@ def create_app(test_config=None):
         if potentialUser is None:
             return "no such user"
         elif potentialUser == g.user:
-            return "this is you!"
+            return render_template('me.html', user=g.user)
         else:
             fstatus = db.execute(
                 'SELECT * FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', (g.user[0], userid)
@@ -116,7 +116,13 @@ def create_app(test_config=None):
             else:
                 return render_template('profile.html', userid=potentialUser[0], fstatus="unfollow")
         
-
+    @app.route("/me")
+    def duh():
+        if g.user is not None:
+            return render_template('me.html', user=g.user)
+        else:
+            return "you're not logged in"
+    
     @app.route("/whoami")
     def whoami():
         if g.user is None:
@@ -124,6 +130,23 @@ def create_app(test_config=None):
             return "no user logged in"
         else:
             return g.user[0]
+
+    @app.route('/addpost', methods=['POST'])
+    def addPost():
+        bodytext = requests['textinput']
+        author = g.user[0]
+        highestID = db.execute('SELECT MAX(id) as HIGHD FROM posts').fetchone()
+        # if this doesn't go fast, then rip
+        db.execute(
+            'INSERT INTO posts (id, body) VALUES (?, ?)',
+            (highestID, bodytext)
+        )
+        db.execute(
+            'INSERT INTO authorship (author, piece) VALUES (?, ?)',
+            (author, highestID)
+        )
+        db.commit()
+        return redirect('/me')
 
     @app.route('/user/<userid>/follow', methods=['POST'])
     def changefollowstatus(userid):
