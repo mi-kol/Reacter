@@ -106,15 +106,21 @@ def create_app(test_config=None):
         if potentialUser is None:
             return "no such user"
         elif potentialUser == g.user:
-            return render_template('me.html', user=g.user)
+            postdata = []
+            for id in getPosts(userid):
+                postdata.append[db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body']]
+            return render_template('me.html', user=g.user, postdata=postdata)
         else:
             fstatus = db.execute(
                 'SELECT * FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', (g.user[0], userid)
             ).fetchone()
+            postdata = []
+            for id in getPosts(userid):
+                postdata.append[db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body']]
             if fstatus is None:
-                return render_template('profile.html', userid=potentialUser[0], fstatus="follow")
+                return render_template('profile.html', userid=potentialUser[0], fstatus="follow", postdata=postdata)
             else:
-                return render_template('profile.html', userid=potentialUser[0], fstatus="unfollow")
+                return render_template('profile.html', userid=potentialUser[0], fstatus="unfollow", postdata=postdata)
         
     @app.route("/me")
     def duh():
@@ -133,20 +139,32 @@ def create_app(test_config=None):
 
     @app.route('/addpost', methods=['POST'])
     def addPost():
-        bodytext = requests['textinput']
+        db = get_db()
+        bodytext = request.form['textinput']
         author = g.user[0]
-        highestID = db.execute('SELECT MAX(id) as HIGHD FROM posts').fetchone()
+        highestID = db.execute('SELECT MAX(id) as HIGHD FROM posts').fetchone()[0] or 0
         # if this doesn't go fast, then rip
         db.execute(
             'INSERT INTO posts (id, body) VALUES (?, ?)',
-            (highestID, bodytext)
+            (highestID + 1, bodytext)
         )
         db.execute(
             'INSERT INTO authorship (author, piece) VALUES (?, ?)',
-            (author, highestID)
+            (author, highestID + 1)
         )
         db.commit()
+        db.close()
         return redirect('/me')
+
+    @app.route('/user/<userid>/getposts')
+    def getPosts(userid):
+        db = get_db()
+        author = g.user[0]
+        usersPostsObj = db.execute(
+            'SELECT * FROM authorship WHERE author = ?',
+            (userid, )
+        ).fetchall()
+        return " ".join((i['piece'] for i in usersPostsObj])
 
     @app.route('/user/<userid>/follow', methods=['POST'])
     def changefollowstatus(userid):
