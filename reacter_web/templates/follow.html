@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Followers/Following</title>
+
+    <style>
+        *{
+            margin:0;
+            padding: 0;
+        }
+
+        .cards {
+            font-family: 'Open Sans', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+            margin: 10px;
+            min-width: 230px;
+            max-width: 315px;
+            width: 100%;
+            color: #ffffff;
+            text-align: center;
+            line-height: 1.4em;
+            background-color: #141414;
+            display: inline-block;
+            margin: 2pt;
+            margin-top: 12%;
+            margin-left: 3%;
+            width: 300px;
+            height: 60%;
+            border-radius: 10px;
+        }
+
+        .cards * {
+            box-sizing: border-box;
+        }
+
+        .cards .background {
+            width: 100%;
+            vertical-align: top;
+            opacity: 0.2;
+            filter: grayscale(100%) blur(10px);
+            transition: all 2s ease;
+        }
+
+        .cards figcaption {
+            width: 100%;
+            padding: 15px 25px;
+            position: absolute;
+            left: 0;
+            top: 50%;
+        }
+
+        .cards .profile {
+            border-radius: 50%;
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            max-width: 100px;
+            opacity: 1;
+            box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, 0%);
+        }
+
+        .cards h3 {
+            margin: 0 0 5px;
+            font-weight: 400;
+        }
+
+        .cards h3 span {
+            display: block;
+            font-size: 0.6em;
+            color: #f39c12;
+            opacity: 0.75;
+        }
+
+        h1 {
+            font-family: 'Open Sans', Arial, sans-serif;
+            font-weight: 700;
+            font-size: 40px;
+            letter-spacing: -1px;
+            position:fixed;
+            margin: 3% 0 0 33%;
+
+        }
+        
+        .cards i {
+            padding: 10px 5px;
+            display: inline-block;
+            font-size: 32px;
+            color: #ffffff;
+            text-align: center;
+            opacity: 0.65;
+        }
+
+        .cards a {
+            text-decoration: none;
+        }
+
+        section{
+            float:right;
+            background-image: radial-gradient(#808080, #333333);
+            width: 100%;
+            height: 100vh;
+            padding: 0;
+            margin:0;
+            overflow: auto;
+            white-space: nowrap;
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background:black;
+            border-radius: 10px;
+        }
+    </style>
+
+</head>
+<body>
+    
+    <section>
+        <h1>Followers / Following</h1>
+        <figure class="cards"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample1.jpg" alt="profile-sample1" class="background"/><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample1.jpg" alt="profile-sample1" class="profile"/>
+            <figcaption>
+                <h3>@examplename<span>description</span></h3>
+            </figcaption>
+        </figure>
+        <figure class="cards"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample2.jpg" alt="profile-sample2" class="background"/><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample2.jpg" alt="profile-sample2" class="profile"/>
+            <figcaption>
+                <h3>@examplename<span>description</span></h3>
+            </figcaption>
+        </figure>
+        <figure class="cards"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample4.jpg" alt="profile-sample4" class="background"/><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample4.jpg" alt="profile-sample4" class="profile"/>
+            <figcaption>
+                <h3>@examplename<span>description</span></h3>
+            </figcaption>
+        </figure>
+        <figure class="cards"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample5.jpg" alt="profile-sample5" class="background"/><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample5.jpg" alt="profile-sample5" class="profile"/>
+            <figcaption>
+                <h3>@examplename<span>description</span></h3>
+            </figcaption>
+        </figure>
+        <figure class="cards"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample3.jpg" alt="profile-sample3" class="background"/><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample3.jpg" alt="profile-sample3" class="profile"/>
+            <figcaption>
+                <h3>@examplename<span>description</span></h3>
+            </figcaption>
+        </figure>
+    </section>
+</body>
+</html>
