@@ -108,7 +108,13 @@ def create_app(test_config=None):
         elif potentialUser == g.user:
             return "this is you!"
         else:
-            return render_template('profile.html', userid=potentialUser[0])
+            fstatus = db.execute(
+                'SELECT * FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', (g.user[0], userid)
+            ).fetchone()
+            if fstatus is None:
+                return render_template('profile.html', userid=potentialUser[0], fstatus="follow")
+            else:
+                return render_template('profile.html', userid=potentialUser[0], fstatus="unfollow")
         
 
     @app.route("/whoami")
@@ -143,6 +149,7 @@ def create_app(test_config=None):
                 )
                 db.commit()
                 print("unfollowed")
+
         return redirect('/user/'+userid)
         
 
