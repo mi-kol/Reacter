@@ -119,6 +119,33 @@ def create_app(test_config=None):
         else:
             return g.user[0]
 
+    @app.route('/user/<userid>/follow', methods=['POST'])
+    def changefollowstatus(userid):
+        db = get_db()
+        if g.user is None:
+            return "who are you?"
+        else:
+            followRecord = db.execute(
+                'SELECT * FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', (g.user[0], userid)
+            ).fetchone()
+            print(db.execute('SELECT * FROM usernetwork'))
+            if followRecord is None:
+                db.execute(
+                    'INSERT INTO usernetwork (theFollower, userBeingFollowed) VALUES (?, ?)',
+                    (g.user[0], userid)
+                )
+                db.commit()
+                print("followed")
+            else:
+                db.execute(
+                    'DELETE FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', 
+                    (g.user[0], userid)
+                )
+                db.commit()
+                print("unfollowed")
+        return redirect('/user/'+userid)
+        
+
     @app.route("/register", methods=['GET', 'POST'])
     def register():
         if request.method == "POST":
