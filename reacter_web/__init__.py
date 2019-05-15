@@ -125,7 +125,12 @@ def create_app(test_config=None):
     @app.route("/me")
     def duh():
         if g.user is not None:
-            return render_template('me.html', user=g.user)
+            db = get_db()
+            postdata = []
+            for id in getPosts(g.user[0]):
+                postdata.append[db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body']]
+            db.close()
+            return render_template('me.html', user=g.user, postdata=postdata)
         else:
             return "you're not logged in"
     
@@ -164,7 +169,7 @@ def create_app(test_config=None):
             'SELECT * FROM authorship WHERE author = ?',
             (userid, )
         ).fetchall()
-        return " ".join((i['piece'] for i in usersPostsObj])
+        return [i['piece'] for i in usersPostsObj]
 
     @app.route('/user/<userid>/follow', methods=['POST'])
     def changefollowstatus(userid):
