@@ -11,7 +11,8 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',
         # DATABASE=os.path.join(app.instance_path, 'reacter.sqlite')
-        DATABASE=os.path.join('/Users/mikol/Desktop/Reacter/var/reacter_web-instance/reacter.sqlite')
+        # DATABASE=os.path.join('/Users/mikol/Desktop/Reacter/var/reacter_web-instance/reacter.sqlite')
+        DATABASE=os.path.join('/Users/maaspinwall/Desktop/Reacter/var/reacter_web-instance/reacter.sqlite')
     )
 
     
@@ -28,7 +29,9 @@ def create_app(test_config=None):
     @app.route("/")
     # This is going to be the homepage, nothing much should have to happen here
     def homepage():
-        return render_template('index.html')
+        if g.user is not None:
+            return redirect('/me')
+        return render_template('home.html')
         # check for cookie
         # if logged in cookie exists:
               # return feed
@@ -58,9 +61,9 @@ def create_app(test_config=None):
 
             if error is None:
                 print("logged in", username, "with password", password)
-                print(user)
                 session.clear()
                 session['user_id'] = user['handle']
+                return redirect('/me')
             close_db()
 
         elif request.form['submitButton'] == "register":
@@ -109,7 +112,10 @@ def create_app(test_config=None):
             postdata = []
             for id in getPosts(userid):
                 postdata.append(db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body'])
-            return render_template('me.html', user=g.user, postdata=postdata)
+            postcount = len(postdata)
+            followersCount = len(db.execute('SELECT * FROM usernetwork WHERE userBeingFollowed = ?', (g.user[0], )).fetchall())
+            followingCount = len(db.execute('SELECT * FROM usernetwork WHERE theFollower = ?', (g.user[0], )).fetchall())
+            return render_template('me.html', user=g.user, postdata=postdata, followercount=followersCount, followingCount=followingCount, postcount=postcount)
         else:
             fstatus = db.execute(
                 'SELECT * FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', (g.user[0], userid)
@@ -117,10 +123,14 @@ def create_app(test_config=None):
             postdata = []
             for id in getPosts(userid):
                 postdata.append(db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body'])
+            postcount = len(postdata)
+            followingCount = len(db.execute('SELECT * FROM usernetwork WHERE userBeingFollowed = ?', (g.user[0], )).fetchall())
+            followersCount = len(db.execute('SELECT * FROM usernetwork WHERE theFollower = ?', (g.user[0], )).fetchall())
+
             if fstatus is None:
-                return render_template('profile.html', userid=potentialUser[0], fstatus="follow", postdata=postdata)
+                return render_template('profile.html', userid=potentialUser[0], fstatus="follow", postdata=postdata, followerscount=followersCount, followingcount=followingCount, postcount=postcount)
             else:
-                return render_template('profile.html', userid=potentialUser[0], fstatus="unfollow", postdata=postdata)
+                return render_template('profile.html', userid=potentialUser[0], fstatus="unfollow", postdata=postdata, followingcount=followingCount, followerscount=followersCount, postcount=postcount)
         
     @app.route("/me")
     def duh():
@@ -131,8 +141,11 @@ def create_app(test_config=None):
                 post = db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()[1]
                 body = "".join([i for i in post])
                 postdata.append(body)
+            postcount = len(postdata)
+            followersCount = len(db.execute('SELECT * FROM usernetwork WHERE userBeingFollowed = ?', (g.user[0], )).fetchall())
+            followingCount = len(db.execute('SELECT * FROM usernetwork WHERE theFollower = ?', (g.user[0], )).fetchall())
             db.close()
-            return render_template('me.html', user=g.user, postdata=postdata)
+            return render_template('me.html', user=g.user, postdata=postdata, followingcount=followingCount, followerscount=followersCount, postcount=postcount)
         else:
             return "you're not logged in"
     

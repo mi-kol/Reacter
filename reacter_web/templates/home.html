@@ -77,7 +77,10 @@
             margin-top: 15%;
             box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.247), inset 1px 1px 5px 3px rgba(0, 0, 0, 0.247);
             display: inline-block;
+        }
 
+        #username,#password {
+            padding-left:8px;
         }
 
         #btn1, #btn2{
@@ -150,11 +153,16 @@
             margin: 3% 0 0 5%;
         }
 
+        .flex {
+            display: flex;
+            justify-content: space-evenly;
+        }
+
     </style>
 </head>
 <body>
     <div class="logo">
-        <img width="100%" src="reacterdotcom.png"/>
+        <img width="100%" src="{{ url_for('static', filename='reacterdotcom.png') }}"/>
     </div>
     
     <div id="container">
@@ -167,16 +175,64 @@
         <img width="75%" height="100%" src="http://madisonclinic.net/wp-content/uploads/2019/03/people-laughing-is-it-normal-to-pee-when-I-laugh-by-healthista.com_.jpg"/>
     </div>
     <div class="wrapper">
-        <div class="login">
-            <form>
+        <div class="login" id="loginrootreact">
+            <!-- <form>
                 <input type="text" placeholder="Username" id="username" required/>
                 <input type="password" placeholder="Password" id="password" required/>
             </form>
             <button id="btn1">Login</button>
-            <button id="btn2">Register</button>
+            <button id="btn2">Register</button> -->
         </div>
         <div class="bottom-box"></div>
     </div>
     <footer></footer>
+
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/jsx">
+    class Bar extends React.Component {
+        render() {
+            return (
+                <input type={this.props.value === "Username" ? "text" : "password"} name={this.props.value} placeholder={this.props.value} id={this.props.value.toLowerCase()} required></input>
+            );
+        }
+    }
+  
+    class Button extends React.Component {
+        render() {
+            return (
+            <div className="button">
+                <input type="submit" name="submitButton" value={this.props.value.toLowerCase()} id={this.props.value === "Login" ? "btn1" : "btn2"}></input>
+            </div>
+            );
+        }
+    }
+  
+    class Login extends React.Component {
+        renderBar(purpose) {
+            return <Bar value={purpose} />;
+        }      
+    
+        renderButton(purpose) {
+            return <Button value={purpose} />;
+        }
+    
+        render() {
+            return (
+                <form action="/frontAuth" method='post'>
+                    {this.renderBar("Username")}
+                    {this.renderBar("Password")}
+                    <div class="flex">
+                        {this.renderButton("Login")}
+                        {this.renderButton("Register")}
+                    </div>
+                </form>
+            );
+        }
+    }
+  
+    ReactDOM.render(<Login />, document.getElementById('loginrootreact'))
+    </script>
 </body>
 </html>

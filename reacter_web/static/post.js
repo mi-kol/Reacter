@@ -1,28 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ user[0] }}'s Page (You)</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='post.css') }}">
-
-
-
-
-</head>
-<body>
-    <!-- <div id="addPost"></div> -->
-
-    <div id="profile-tweets"></div>
-
-
-    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script type="text/jsx" src="{{ url_for('static', filename='addpost.js') }}"></script>
-    <script type="text/jsx">
-const categories = ['World', 'Fashion', 'Tech', 'Sport', 'Random'];
+const categories = ['World', 'Fashion', 'Tech', 'Sport'];
 
 // ===============render this class to run all of it==================
 
@@ -43,9 +19,8 @@ class Feed extends React.Component {
     super(props);
     this.state = {
       posts: [
-        {%for post in postdata%}
-        {category: categories[4], content: ' - {{ post }}'},
-        {% endfor %}
+        {category: categories[0], content: ' - Heal the world, make it a better place, for you and for me and the entire human race!'},
+        {category: categories[1], content: ' - Ive always liked yellow tops with strips'}
       ],
       filteredPosts: []
     }
@@ -118,7 +93,7 @@ class PostForm extends React.Component {
   render() {
     return (
       <div className="post-form">
-        <form action='/addpost' method='post' >
+        <form onSubmit={this.handleSubmit}>
           <label>
             Category:
             <select ref={(input) => this.category = input}>
@@ -128,9 +103,9 @@ class PostForm extends React.Component {
             </select>
           </label>
           <label>
-            <input type="text" name="textinput" ref={(input) => this.content = input} />
+            <input type="text" ref={(input) => this.content = input} />
           </label>
-          <input type="submit" name="submitButton" className="button" value="Submit" id="pleasestyleme"></input>
+          <button className="button">Submit</button>
         </form>
       </div>
     )
@@ -172,7 +147,4 @@ class Filter extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('profile-tweets'));
-    </script>
-</body>
-</html>
+ReactDOM.render(<App/>, document.getElementById('profile-tweets'));
