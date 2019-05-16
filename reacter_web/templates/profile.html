@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ userid }}'s Profile</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}"> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">
 
     <style>
@@ -197,6 +197,7 @@
     </style>
 </head>
 <body>
+  
     <div class="wrapper">
     <header>
         <div class="side_left"></div>
@@ -225,6 +226,10 @@
             </li>    
         </ul>
     </div>
+      
+    <form action="{{ userid }}/follow" method="POST">
+        <input type="submit" name="follow" value="{{ fstatus }}">
+    </form>
 
     <div class="compose">
         <form>
@@ -234,6 +239,10 @@
     </div>
     
     <div class="profile-tweets"></div>
+  
+    {% for post in postdata %}
+    post
+    {% endfor %}
     </div>
 </body>
 </html>

@@ -7,10 +7,13 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    print(app.instance_path)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'reacter.sqlite')
+        # DATABASE=os.path.join(app.instance_path, 'reacter.sqlite')
+        DATABASE=os.path.join('/Users/mikol/Desktop/Reacter/var/reacter_web-instance/reacter.sqlite')
     )
+
     
     if test_config is None:
         app.config.from_pyfile('config.py', silent=True)
@@ -56,8 +59,8 @@ def create_app(test_config=None):
             if error is None:
                 print("logged in", username, "with password", password)
                 print(user)
-                # session.clear()
-                # session['user_id'] = user['handle']
+                session.clear()
+                session['user_id'] = user['handle']
             close_db()
 
         elif request.form['submitButton'] == "register":
@@ -86,7 +89,7 @@ def create_app(test_config=None):
                 close_db()
                 return "there is already a user by that name"
 
-        return render_template('index.html')
+        return redirect('/')
 
     @app.route("/testingfeed")
     def feed():
@@ -96,7 +99,107 @@ def create_app(test_config=None):
     @app.route("/user/<userid>")
     # This is the user profile page
     def profile(userid):
-        return render_template('profile.html', userid=userid)
+        db = get_db()
+        potentialUser = db.execute(
+            'SELECT * FROM users WHERE handle = ?', (userid, )
+        ).fetchone()
+        if potentialUser is None:
+            return "no such user"
+        elif potentialUser == g.user:
+            postdata = []
+            for id in getPosts(userid):
+                postdata.append(db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body'])
+            return render_template('me.html', user=g.user, postdata=postdata)
+        else:
+            fstatus = db.execute(
+                'SELECT * FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', (g.user[0], userid)
+            ).fetchone()
+            postdata = []
+            for id in getPosts(userid):
+                postdata.append(db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body'])
+            if fstatus is None:
+                return render_template('profile.html', userid=potentialUser[0], fstatus="follow", postdata=postdata)
+            else:
+                return render_template('profile.html', userid=potentialUser[0], fstatus="unfollow", postdata=postdata)
+        
+    @app.route("/me")
+    def duh():
+        if g.user is not None:
+            db = get_db()
+            postdata = []
+            for id in getPosts(g.user[0]):
+                post = db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()[1]
+                body = "".join([i for i in post])
+                postdata.append(body)
+            db.close()
+            return render_template('me.html', user=g.user, postdata=postdata)
+        else:
+            return "you're not logged in"
+    
+    @app.route("/whoami")
+    def whoami():
+        if g.user is None:
+            print("yikes")
+            return "no user logged in"
+        else:
+            return g.user[0]
+
+    @app.route('/addpost', methods=['POST'])
+    def addPost():
+        db = get_db()
+        bodytext = request.form['textinput']
+        author = g.user[0]
+        highestID = db.execute('SELECT MAX(id) as HIGHD FROM posts').fetchone()[0] or 0
+        # if this doesn't go fast, then rip
+        db.execute(
+            'INSERT INTO posts (id, body) VALUES (?, ?)',
+            (highestID + 1, bodytext)
+        )
+        db.execute(
+            'INSERT INTO authorship (author, piece) VALUES (?, ?)',
+            (author, highestID + 1)
+        )
+        db.commit()
+        db.close()
+        return redirect('/me')
+
+    @app.route('/user/<userid>/getposts')
+    def getPosts(userid):
+        db = get_db()
+        author = g.user[0]
+        usersPostsObj = db.execute(
+            'SELECT * FROM authorship WHERE author = ?',
+            (userid, )
+        ).fetchall()
+        return [i['piece'] for i in usersPostsObj]
+
+    @app.route('/user/<userid>/follow', methods=['POST'])
+    def changefollowstatus(userid):
+        db = get_db()
+        if g.user is None:
+            return "who are you?"
+        else:
+            followRecord = db.execute(
+                'SELECT * FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', (g.user[0], userid)
+            ).fetchone()
+            print(db.execute('SELECT * FROM usernetwork'))
+            if followRecord is None:
+                db.execute(
+                    'INSERT INTO usernetwork (theFollower, userBeingFollowed) VALUES (?, ?)',
+                    (g.user[0], userid)
+                )
+                db.commit()
+                print("followed")
+            else:
+                db.execute(
+                    'DELETE FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', 
+                    (g.user[0], userid)
+                )
+                db.commit()
+                print("unfollowed")
+
+        return redirect('/user/'+userid)
+        
 
     @app.route("/register", methods=['GET', 'POST'])
     def register():
@@ -138,5 +241,5 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM users WHERE handle = ?', (handle,)
+            'SELECT * FROM users WHERE handle = ?', (user_id,)
         ).fetchone()
