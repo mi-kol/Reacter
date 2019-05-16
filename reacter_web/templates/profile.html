@@ -7,17 +7,242 @@
     <title>{{ userid }}'s Profile</title>
     <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}"> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">
+
+    <style>
+        *{
+            box-sizing: border-box; 
+            margin:0;
+            padding: 0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+            background-color: #6b677a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: black;
+            border-radius: 10px;
+        }
+
+        body{
+            background: #242328;
+        }
+
+        .wrapper {
+            position: relative;
+            width: 100%; 
+        }
+
+        header {
+            background: #1C1B20;
+            border-bottom: 0.2em solid #131316;
+            box-shadow: 0 0.1em 0.2em rgba(#111, 0.5);
+            height: 4em;
+            width: 100%;
+            margin: 0;
+        }
+
+        .side_left, .side_right {
+            display: block;
+            height: 100%;
+            width: 20%; 
+        }
+
+
+        .side_left {
+            border-right: 0.1em solid #131316;    
+            float: left;
+            padding: 0.8em 0;    
+        }
+
+        .side_right {
+            border-left: 0.1em solid #29272e;  
+            float: right;
+            padding: 1em 1.5em;    
+        }
+
+        .title {
+            border-left: 0.1em solid #29272e;
+            border-right: 0.1em solid #131316;
+            float: left;
+            height: 100%;
+            width: 60%; 
+        }
+
+        h1 {
+            color: white;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 1.4em;
+            font-weight: 400;
+            margin: 0.8em;
+            text-align: center;
+            text-shadow: 
+                0.05em 0.05em 0.05em rgba(#222, 0.4),
+                -0.05em -0.05em 0.05em rgba(#fafafa, 0.4);
+            text-transform: uppercase;
+        }
+
+        .banner {     
+            padding: 1.5em 0;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(255, 166, 0, 0.164);
+            display: inline-block;       
+            border-bottom: 0.2em solid #131316;
+            box-shadow: 
+                inset 0 -0.1em 0.2em rgba(#111, 0.5);
+        }
+
+        .banner .background{
+            background-size: cover;
+            width: 100%;
+            height: 10.5em;
+            vertical-align: top;
+            opacity: 0.2;
+            filter: grayscale(100%) blur(10px);
+        }
+
+        .banner .profile{
+            border-radius: 50%;
+            position: absolute;
+            top: 20%;
+            bottom: 50%;
+            left: 50%;
+            max-width: 100px;
+            opacity: 1;
+            box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, 0%);
+        }
+
+        .avatar {
+            border: 2px solid rgba(255, 217, 145, 0.623);
+            width: 95%; 
+            border-radius: 50%;
+            float: right;
+            width: 12.5%; 
+        }
+
+
+        .profile-info {
+            background: #121215;
+            width: 100%; 
+            height: 60px;
+            margin: -.5% 0 0 0;
+        }
+
+        .profile-info ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            
+        }
+
+        .profile-info li {
+            color: #ccc;
+            display: inline-block; 
+            margin: 0 0 0 0;
+            padding: .5em 5em 0 5em;
+        }
+
+        .profile-info span {
+            display: block;
+            font-size: 25px;
+            color: white;
+        }
+
+        .compose{
+            background-color: #6b677a;
+            height: 10vh;
+            width: 100%; 
+            display: flex;
+        }
+
+        input{
+            background-color: rgba(102, 66, 0, 0.452);
+            border: none;
+            border-radius: 0.2em;
+            padding: 0.5em;
+            width: 1150px;
+            height: 10vh;
+            outline: none;
+        }
+
+        input[value="Make a post"]{
+            color: rgba(0, 0, 0, 0.61);
+            font-weight: 400;
+            font-size: 20px;
+        }
+
+        label input{
+            background-color: rgba(102, 66, 0, 0.452);
+            border: none;
+            border-radius: 0.2em;
+            padding: 0.5em;
+            width: 1150px;
+            height: 10vh;
+            outline: none;  
+        }
+
+        button{
+            margin: 1.2% 0 0 4%;
+            height: 30px;
+            border-radius: 10px;
+            width: 100px;
+        }
+    </style>
 </head>
 <body>
-    <p>@{{ userid }}</p>
-    <p>{{ userid }}</p>
+  
+    <div class="wrapper">
+    <header>
+        <div class="side_left"></div>
+        <div class="title">
+        <h1>{{ userid }}</h1>
+        </div>
+        <div class="side_right"></div>
+    </header>
+
+    <div class="banner"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample1.jpg" alt="profile-sample1" class="background"/><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/profile-sample1.jpg" alt="profile-sample1" class="profile"/>
+    </div>
+
+    <div class="profile-info">
+        <ul>
+            <li>
+                Post
+                <span>103</span>
+            </li>
+            <li>
+                Following
+                <span>1,285</span>
+            </li>
+            <li>
+                Followers
+                <span>371</span>
+            </li>    
+        </ul>
+    </div>
+      
     <form action="{{ userid }}/follow" method="POST">
         <input type="submit" name="follow" value="{{ fstatus }}">
     </form>
 
+    <div class="compose">
+        <form>
+            <input value="Make a post" />
+        </form>
+        <button>Submit</button>
+    </div>
+    
+    <div class="profile-tweets"></div>
+  
     {% for post in postdata %}
     post
     {% endfor %}
-
+    </div>
 </body>
 </html>

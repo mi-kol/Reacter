@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="icon" href="reacter_icon.png"/>
+    <link href='https://fonts.googleapis.com/css?family=Patrick Hand' rel='stylesheet'>
+    <title>Reacter</title>
+
+    <style>
+        *{
+            margin: 0%;
+        }
+
+        body{
+            overflow: hidden;
+        }
+
+        #container {
+            position: relative;
+            height: 100vh;
+            width: 650px;
+            overflow: hidden;
+            background-color: #f0f0f0;
+            transform: skew(15deg);
+            left: -100px;
+        }
+
+        .bg-img{
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            z-index: -10000;
+            margin-top: -660px;
+            margin-left: 400px;
+        }
+
+        footer{
+            width: 100%;
+            height: 20vh;
+            position: absolute;
+            z-index: 10;
+            margin-top: -60px;
+            background-color: #f0f0f0;
+        }
+
+        .wrapper{
+            width: 600px;
+            height: 500px;
+            margin-top: -540px;
+            margin-left: 440px;
+            position: absolute;
+            z-index: 100;
+            background-color: rgba(0, 0, 0, 0.342); 
+            box-shadow: 0 2px 5px 3px rgba(146, 117, 20, 0.288), 0 1px 4px rgba(146, 117, 20, 0.288);
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .bottom-box{
+            background-color:#fafafa;
+            width: 100%;
+            height: 200px;
+            box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.247);
+            margin-top: 50%;
+        }
+
+        .login{
+            position: absolute;
+            z-index: 1000;
+            background-color: #f0f0f0;
+            width: 500px;
+            height: 350px;
+            margin-top: 15%;
+            box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.247), inset 1px 1px 5px 3px rgba(0, 0, 0, 0.247);
+            display: inline-block;
+
+        }
+
+        #btn1, #btn2{
+            background-color: #f6a73a;
+            border: 0;
+            border-radius: 20px;
+            width: 200px;
+            height: 50px;
+            font-size: 15px;
+            color: white;
+            margin: 5% 0 0 6.5%;
+            outline: none;
+            
+        }
+
+        #btn1:hover, #btn2:hover{
+            background-color:rgb(255, 177, 31);
+            
+        }
+
+        input{
+            border: 2px solid grey;
+            border-radius: 30px;
+            height: 40px;
+            width: 80%;
+            margin: 5% 5% 5% 10%;
+            outline: none;
+        }
+
+        #username{
+            margin-top: 10%;
+        }
+
+        #icon1{
+            margin: 58% 0% 0% 20%;
+            transform: skew(-15deg);
+            width: 100%;
+        }
+
+        #icon2, #icon3{
+            margin: 5% 20% 0% 27.5%;
+            transform: skew(-15deg); 
+            width: 100%;
+        }
+
+        #icon3{
+            margin-left: 35%;
+        }
+
+        #icon1, #icon2, #icon3{
+            font-size: 38px;
+            color: #f6a73a;
+            text-shadow: 2px 2px rgb(190, 99, 14);
+        }
+
+        i p{
+            font-family: 'Patrick Hand';font-size: 24px;
+            letter-spacing: 1px;
+            display: inline;
+            padding: 7%;
+            color: black;
+            text-shadow: 1px 1px 5px  rgba(99, 59, 3, 0.356);
+        }
+        
+        .logo{
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            z-index: 100000;
+            margin: 3% 0 0 5%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img width="100%" src="reacterdotcom.png"/>
+    </div>
+    
+    <div id="container">
+        <i class='fas fa-user' id="icon1"><p> Reach Out</p></i>
+        <i class='fas fa-comment' id="icon2"><p> Respond</p></i>
+        <i class='fas fa-equals' id="icon3"><p> React</p></i>
+    </div>
+
+    <div class="bg-img">
+        <img width="75%" height="100%" src="http://madisonclinic.net/wp-content/uploads/2019/03/people-laughing-is-it-normal-to-pee-when-I-laugh-by-healthista.com_.jpg"/>
+    </div>
+    <div class="wrapper">
+        <div class="login">
+            <form>
+                <input type="text" placeholder="Username" id="username" required/>
+                <input type="password" placeholder="Password" id="password" required/>
+            </form>
+            <button id="btn1">Login</button>
+            <button id="btn2">Register</button>
+        </div>
+        <div class="bottom-box"></div>
+    </div>
+    <footer></footer>
+</body>
+</html>
