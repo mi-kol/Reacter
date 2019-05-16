@@ -1,7 +1,8 @@
 import os
 
-from flask import Flask, render_template, request, g, redirect, session, Blueprint, url_for
+from flask import Flask, render_template, request, g, redirect, session, Blueprint, url_for, jsonify
 from .db import get_db, close_db
+import json
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -115,45 +116,81 @@ def create_app(test_config=None):
         if potentialUser is None:
             return "no such user"
         elif potentialUser == g.user:
-            postdata = []
+            postdata = {}
+            status = {}
             for id in getPosts(userid):
-                postdata.append(db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body'])
+                postdata[id] = db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body']
+                if db.execute('SELECT * FROM likes WHERE liker = ? AND postid = ?', (g.user[0], id)) is not None:
+                    status[id] = "Disenjoy"
+                else:
+                    status[id] = "Enjoy"
             postcount = len(postdata)
             followersCount = len(db.execute('SELECT * FROM usernetwork WHERE userBeingFollowed = ?', (g.user[0], )).fetchall())
             followingCount = len(db.execute('SELECT * FROM usernetwork WHERE theFollower = ?', (g.user[0], )).fetchall())
-            return render_template('me.html', user=g.user, postdata=postdata, followercount=followersCount, followingCount=followingCount, postcount=postcount)
+            status = json.dumps(status)
+            return render_template('me.html', user=g.user, postdata=postdata, followercount=followersCount, followingCount=followingCount, postcount=postcount, status=status)
         else:
             fstatus = db.execute(
                 'SELECT * FROM usernetwork WHERE theFollower = ? AND userBeingFollowed = ?', (g.user[0], userid)
             ).fetchone()
-            postdata = []
+            postdata = {}
+            status = {}
             for id in getPosts(userid):
-                postdata.append(db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body'])
+                postdata[id] = db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body']
+                if db.execute('SELECT * FROM likes WHERE liker = ? AND postid = ?', (g.user[0], id)) is not None:
+                    status[id] = "Disenjoy"
+                else:
+                    status[id] = "Enjoy"
             postcount = len(postdata)
             followingCount = len(db.execute('SELECT * FROM usernetwork WHERE userBeingFollowed = ?', (g.user[0], )).fetchall())
             followersCount = len(db.execute('SELECT * FROM usernetwork WHERE theFollower = ?', (g.user[0], )).fetchall())
-
+            status = json.dumps(status)
+            print(status)
             if fstatus is None:
-                return render_template('profile.html', userid=potentialUser[0], fstatus="follow", postdata=postdata, followerscount=followersCount, followingcount=followingCount, postcount=postcount)
+                return render_template('profile.html', userid=potentialUser[0], fstatus="follow", postdata=postdata, followerscount=followersCount, followingcount=followingCount, postcount=postcount, status=status)
             else:
-                return render_template('profile.html', userid=potentialUser[0], fstatus="unfollow", postdata=postdata, followingcount=followingCount, followerscount=followersCount, postcount=postcount)
+                return render_template('profile.html', userid=potentialUser[0], fstatus="unfollow", postdata=postdata, followingcount=followingCount, followerscount=followersCount, postcount=postcount, status=status)
         
     @app.route("/me")
     def duh():
         if g.user is not None:
             db = get_db()
-            postdata = []
+            postdata = {}
+            status = {}
             for id in getPosts(g.user[0]):
                 post = db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()[1]
                 body = "".join([i for i in post])
-                postdata.append(body)
+                postdata[id] = body
+                if db.execute('SELECT * FROM likes WHERE liker = ? AND postid = ?', (g.user[0], id)) is not None:
+                    status[id] = "Disenjoy"
+                else:
+                    status[id] = "Enjoy"
             postcount = len(postdata)
             followersCount = len(db.execute('SELECT * FROM usernetwork WHERE userBeingFollowed = ?', (g.user[0], )).fetchall())
             followingCount = len(db.execute('SELECT * FROM usernetwork WHERE theFollower = ?', (g.user[0], )).fetchall())
             db.close()
-            return render_template('me.html', user=g.user, postdata=postdata, followingcount=followingCount, followerscount=followersCount, postcount=postcount)
+            status = json.dumps(status)
+            return render_template('me.html', user=g.user, postdata=postdata, followingcount=followingCount, followerscount=followersCount, postcount=postcount, status=status)
         else:
             return "you're not logged in"
+
+    @app.route("/user/<userid>/enjoy")
+    def changeLikeStatus(userid):
+        postToLike = [k for k,v in request.form if isinstance(k, int)][0]
+        if g.user is None:
+            return redirect('/')
+        if db.execute('SELECT * FROM likes WHERE liker = ? AND postid = ?', (g.user[0], postToLike)).fetchone() is None:
+            db.execute(
+                'INSERT INTO likes (liker, postid) VALUES (?, ?)',
+                (g.user[0], postToLike)
+            )
+        else:
+            db.execute(
+                'DELETE FROM likes WHERE liker = ? AND postid = ?',
+                (g.user[0], userid)
+            )
+        dest = '/user'+userid
+        return redirect(dest)
     
     @app.route("/whoami")
     def whoami():
@@ -220,23 +257,23 @@ def create_app(test_config=None):
         return redirect('/user/'+userid)
         
 
-    @app.route("/register", methods=['GET', 'POST'])
-    def register():
-        if request.method == "POST":
-            # handle = request.form['username']
-            # password = request.form['password']
-            # so, we'll need to catch the username and password data here to put into the database
-            # that's done with requests.get(index of thing) and db.execute(
-            #    'INSERT INTO users (handle, password) VALUES (?, ?)',
-            #    (handle, password)
-            #)
-            # STORING PASSWORD IN PLAIN TEXT IS BAD PRACTICE ^^^^^^
-            # as well as check if that user already exists in the database
-            # could this be done clientside? ^ [yes it can be, by AJAX protocol which is implementable in JavaScript]
-            # all data verification stuff should be done by javascript (essentially making sure that username and password aren't empty)
-            return render_template('profile.html', userid=userid)
-        else:
-            return render_template('register.html')
+    # @app.route("/register", methods=['GET', 'POST'])
+    # def register():
+    #     if request.method == "POST":
+    #         # handle = request.form['username']
+    #         # password = request.form['password']
+    #         # so, we'll need to catch the username and password data here to put into the database
+    #         # that's done with requests.get(index of thing) and db.execute(
+    #         #    'INSERT INTO users (handle, password) VALUES (?, ?)',
+    #         #    (handle, password)
+    #         #)
+    #         # STORING PASSWORD IN PLAIN TEXT IS BAD PRACTICE ^^^^^^
+    #         # as well as check if that user already exists in the database
+    #         # could this be done clientside? ^ [yes it can be, by AJAX protocol which is implementable in JavaScript]
+    #         # all data verification stuff should be done by javascript (essentially making sure that username and password aren't empty)
+    #         return render_template('profile.html', userid=userid)
+    #     else:
+    #         return render_template('register.html')
 
     @app.route("/post/<postid>")
     def getPost(postid):

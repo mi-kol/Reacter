@@ -47,8 +47,8 @@ class Feed extends React.Component {
     super(props);
     this.state = {
       posts: [
-        {%for post in postdata%}
-        {category: categories[4], content: ' - {{ post }}'},
+        {%for id, body in postdata.items()%}
+        {category: categories[4], content: ' - {{ body }}'},
         {% endfor %}
       ],
       filteredPosts: []

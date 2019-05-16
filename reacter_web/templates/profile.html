@@ -268,13 +268,16 @@ class App extends React.Component {
 class Feed extends React.Component {
   constructor(props) {
     super(props);
+    let boonk = "{{ status }}"
+    let cleanedUp = boonk.replace("&#34", '"')
     this.state = {
       posts: [
-        {%for post in postdata%}
-        {category: categories[4], content: ' - {{ post }}'},
+        {%for id,body in postdata.items()%}
+        {category: categories[4], content: ' - {{ body }}', id: {{ id }}},
         {% endfor %}
       ],
-      filteredPosts: []
+      filteredPosts: [],
+      status: JSON.parse(cleanedUp)
     }
 
     this.handleNewPost = this.handleNewPost.bind(this);
@@ -313,10 +316,18 @@ class Feed extends React.Component {
 
 class Post extends React.Component {
   render() {
+    console.log(status)
+    let boonk = "{{ status }}"
+    let cleanedUp = boonk.replace("&#34", '"')
+    let statusOfPost = cleanedUp[this.props.value.id]
+
     return (
       <div className="post">
         <span className="label">{this.props.value.category}</span>
         <span className="content">{this.props.value.content}</span>
+        <form action='/{{ userid }}/enjoy' method="post">
+            <input type="submit" name={this.props.value.id} Value="{statusOfPost}" />
+        </form>
       </div>
     )
   }
