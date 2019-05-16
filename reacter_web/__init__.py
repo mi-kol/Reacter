@@ -99,6 +99,12 @@ def create_app(test_config=None):
         # this definitely needs to be more complicated, or maybe not(?)
         return render_template('feed.html')
 
+    @app.route("/logout", methods=['POST'])
+    def logout():
+        session.clear()
+        g.user = None
+        return redirect('/')
+
     @app.route("/user/<userid>")
     # This is the user profile page
     def profile(userid):
