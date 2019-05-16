@@ -108,7 +108,7 @@ def create_app(test_config=None):
         elif potentialUser == g.user:
             postdata = []
             for id in getPosts(userid):
-                postdata.append[db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body']]
+                postdata.append(db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body'])
             return render_template('me.html', user=g.user, postdata=postdata)
         else:
             fstatus = db.execute(
@@ -116,7 +116,7 @@ def create_app(test_config=None):
             ).fetchone()
             postdata = []
             for id in getPosts(userid):
-                postdata.append[db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body']]
+                postdata.append(db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body'])
             if fstatus is None:
                 return render_template('profile.html', userid=potentialUser[0], fstatus="follow", postdata=postdata)
             else:
@@ -128,7 +128,9 @@ def create_app(test_config=None):
             db = get_db()
             postdata = []
             for id in getPosts(g.user[0]):
-                postdata.append[db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()['body']]
+                post = db.execute('SELECT * FROM posts WHERE id = ?', (id, )).fetchone()[1]
+                body = "".join([i for i in post])
+                postdata.append(body)
             db.close()
             return render_template('me.html', user=g.user, postdata=postdata)
         else:
