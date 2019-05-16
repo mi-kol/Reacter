@@ -7,6 +7,7 @@
     <title>{{ userid }}'s Profile</title>
     <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}"> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='post.css') }}">
 
     <style>
         *{
@@ -214,35 +215,189 @@
         <ul>
             <li>
                 Post
-                <span>103</span>
+                <span>{{ postcount }}</span>
             </li>
             <li>
                 Following
-                <span>1,285</span>
+                <span>{{ followingcount }}</span>
             </li>
             <li>
                 Followers
-                <span>371</span>
+                <span>{{ followerscount }}</span>
             </li>    
         </ul>
     </div>
       
-    <form action="{{ userid }}/follow" method="POST">
-        <input type="submit" name="follow" value="{{ fstatus }}">
+    <form action="{{ userid }}/follow" method="POST" style="width:100%;">
+        <input type="submit" name="follow" value="{{ fstatus }}" style="width: 100%;">
     </form>
 
-    <div class="compose">
+    <!-- <div class="compose">
         <form>
             <input value="Make a post" />
         </form>
         <button>Submit</button>
-    </div>
+    </div> -->
     
-    <div class="profile-tweets"></div>
+    <div style="height:5vh;width:100%;"></div>
+
+    <div id="profile-tweets"></div>
   
-    {% for post in postdata %}
-    {{ post }}
-    {% endfor %}
     </div>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/jsx" src="{{ url_for('static', filename='addpost.js') }}"></script>
+    <script type="text/jsx">
+const categories = ['World', 'Fashion', 'Tech', 'Sport', 'Random'];
+
+// ===============render this class to run all of it==================
+
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <Feed />
+      </div>
+    );
+  }
+}
+
+// ===============code for post already made and the process for filtering them==================
+
+class Feed extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      posts: [
+        {%for post in postdata%}
+        {category: categories[4], content: ' - {{ post }}'},
+        {% endfor %}
+      ],
+      filteredPosts: []
+    }
+
+    this.handleNewPost = this.handleNewPost.bind(this);
+    this.handleFilter = this.handleFilter.bind(this);
+  }
+
+  handleNewPost(post) {
+    this.setState({
+      posts: this.state.posts.concat([post])
+    });
+  }
+
+  handleFilter(filter) {
+    this.setState({
+      filteredPosts: this.state.posts.filter((post) =>
+        post.category.toUpperCase() === filter.toUpperCase() ||
+          post.content.includes(filter)
+      )
+    });
+  }
+
+  render() {
+    const posts = this.state.posts.map((post, index) =>
+      <Post key={index} value={post} />
+    );
+    const filteredPosts = this.state.filteredPosts.map((post, index) =>
+      <Post key={index} value={post} />
+    );
+    return (
+      <div className="feed">
+        {filteredPosts.length > 0 ? filteredPosts : posts}
+      </div>
+    )
+  }
+}
+
+class Post extends React.Component {
+  render() {
+    return (
+      <div className="post">
+        <span className="label">{this.props.value.category}</span>
+        <span className="content">{this.props.value.content}</span>
+      </div>
+    )
+  }
+}
+
+// ===============code for making post (the input and having it display)==================
+
+class PostForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event) {
+    this.props.onSubmit({
+      category: this.category.value,
+      content: this.content.value
+    });
+    this.category.value = categories[0];
+    this.content.value = ' - ';
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <div className="post-form">
+        <form action='/addpost' method='post' >
+          <label>
+            Category:
+            <select ref={(input) => this.category = input}>
+              {categories.map((category, index) =>
+                <option key={category} value={category}>{category}</option>
+              )}
+            </select>
+          </label>
+          <label>
+            <input type="text" name="textinput" ref={(input) => this.content = input} />
+          </label>
+          <input type="submit" name="submitButton" className="button" value="Submit" id="pleasestyleme"></input>
+        </form>
+      </div>
+    )
+  }
+}
+
+// ===============code for filtering==================
+
+class Filter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleKeyUp(event) {
+    if (event.key === 'Enter') {
+      this.props.onFilter(this.state.value);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <label>
+          <input type="search" value={this.state.value}
+                               onChange={this.handleChange}
+                               onKeyUp={this.handleKeyUp}
+                               placeholder="Filter by category or content..." />
+        </label>
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(<Feed />, document.getElementById('profile-tweets'));
+    </script>
 </body>
 </html>
